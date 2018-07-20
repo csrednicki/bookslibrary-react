@@ -1,13 +1,17 @@
 let express = require('express');
 let router = express.Router();
 let app = express();
+let bodyParser = require('body-parser');
 let serverPort = 8080;
 let indexRoute = require('./routes/index');
-let apiRoute = require('./routes/api');
+let bookstoreRoute = require('./routes/bookstore');
+
+// json parser
+app.use(bodyParser.json());
 
 // main routes
 app.use('/', indexRoute);
-app.use('/api', apiRoute);
+app.use('/bookstore', bookstoreRoute);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

@@ -1,29 +1,50 @@
 import React, { Component } from "react";
 import "./app.css";
-import ReactImage from "./react.png";
+import ReactTable from "react-table";
+import 'react-table/react-table.css'
 
 export default class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { username: null };
+    this.state = {
+      bookstore: [],
+    };
   }
 
   componentDidMount() {
-    fetch("/api/getUsername")
+    fetch("/bookstore/getBooks")
       .then(res => res.json())
-      .then(user => this.setState({ username: user.username }));
+      .then(bookstore => {
+
+        const books = bookstore.forEach(book => {
+          console.log(book)
+        });
+
+        this.setState({ bookstore });
+
+      })
   }
 
   render() {
+
+    const columns = [{
+      Header: 'Title',
+      accessor: 'title'
+    }, {
+      Header: 'ISBN',
+      accessor: 'isbn',
+    }, {
+      Header: 'Cover',
+      accessor: 'cover',
+      Cell: props => <img className='cover' src={props.value} />
+    }];
+
     return (
-      <div>
-        {this.state.username ? (
-          <h1>Hello {this.state.username}</h1>
-        ) : (
-          <h1>Loading.. please wait!</h1>
-        )}
-        <img src={ReactImage} alt="react" />
-      </div>
-    );
+      <ReactTable
+        data={this.state.bookstore}
+        columns={columns}
+      />
+    )
+
   }
 }
