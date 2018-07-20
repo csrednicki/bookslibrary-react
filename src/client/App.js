@@ -1,13 +1,12 @@
 import React, { Component } from "react";
 import "./app.css";
-import ReactTable from "react-table";
-import 'react-table/react-table.css'
 
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       bookstore: [],
+      searchString: 'jura',
     };
   }
 
@@ -27,24 +26,23 @@ export default class App extends Component {
 
   render() {
 
-    const columns = [{
-      Header: 'Title',
-      accessor: 'title'
-    }, {
-      Header: 'ISBN',
-      accessor: 'isbn',
-    }, {
-      Header: 'Cover',
-      accessor: 'cover',
-      Cell: props => <img className='cover' src={props.value} />
-    }];
+    const list = this.state.bookstore.filter(d => {
+      const regex = new RegExp(this.state.searchString, 'gi');
+      return d.title.match(regex);
+    }).map((book, i) =>
+    <tr key={i}>
+      <td>{book.title}</td>
+      <td>{book.isbn}</td>
+      <td><img src={book.cover} /></td>
+    </tr>
+    );
 
     return (
-      <ReactTable
-        data={this.state.bookstore}
-        columns={columns}
-      />
-    )
-
+      <table>
+        <tbody>
+        {list}
+        </tbody>
+      </table>
+    );
   }
 }
