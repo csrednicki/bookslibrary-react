@@ -1,18 +1,22 @@
 let express = require('express');
+let router = express.Router();
 let app = express();
 let serverPort = 8080;
-let api = require('./routes/api');
+let indexRoute = require('./routes/index');
+let apiRoute = require('./routes/api');
 
-app.use('/api', api);
+// main routes
+app.use('/', indexRoute);
+app.use('/api', apiRoute);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-    var err = new Error('Not Found');
+    var err = new Error(`Not Found`);
     err.status = 404;
     next(err);
 });
 
-// error handler
+// setting up error handler
 app.use(function (err, req, res, next) {
     // set locals, only providing error in development
     res.locals.message = err.message;
@@ -20,7 +24,7 @@ app.use(function (err, req, res, next) {
 
     // render the error page
     res.status(err.status || 500);
-    res.render('error');
+    res.send(`Houston, we have a problem! Error ${err.status}`);
 });
 
 app.use(express.static('dist'));
