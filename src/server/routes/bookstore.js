@@ -1,41 +1,42 @@
 let express = require('express');
 let router = express.Router();
 let utils = require('../utils');
-
 let routesObj = router.stack;
 
+const dbfile = 'books.json';
+
 router.get('/getBooks', function (req, res, next) {
-    utils.getData('books.json', 'utf8')
+    utils.getData(dbfile, 'utf8')
         .then(data => {
+            // sending json to client
             res.setHeader('Content-Type', 'application/json');
             res.send(data);
         })
-        .catch(
-            error => {
-                console.log('Error: ', error);
-            }
-        );
+        .catch(error => console.log('Error: ', error) );
 });
 
 router.put('/saveBooks', function (req, res, next) {
-    console.log('body:', req.body)
+    let data = req.body;
 
-    let datatosave = JSON.stringify(req.body);
-    console.log(datatosave)
+    console.log('data before', data)
 
-    utils.saveData('books.json', datatosave)
-        .then(data => {
-            res.status(200).send('List saved');
-        })
-        .catch(
-            error => {
-                console.log('Error: ', error);
-            }
-        );
-});
+    if(data.length > 0 ) {
 
-router.get('/', function (req, res, next) {
-    res.send(`Welcome to Books Directory!`);
+        let booksData = JSON.stringify(req.body);
+
+        console.log('data after',  booksData)
+
+        // saving books file
+        utils.saveData(dbfile, booksData)
+            .then(data => {
+                console.log(data)
+                res.status(200).send('List saved')
+            } )
+            .catch(error => console.log('Error: ', error) );
+    } else {
+        console.log('List empty')
+        res.status(200).send('List empty')
+    }
 });
 
 module.exports = router;

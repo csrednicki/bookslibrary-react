@@ -3,15 +3,16 @@ let router = express.Router();
 let app = express();
 let bodyParser = require('body-parser');
 let serverPort = 8080;
-let indexRoute = require('./routes/index');
 let bookstoreRoute = require('./routes/bookstore');
 
 // json parser
 app.use(bodyParser.json());
 
 // main routes
-app.use('/', indexRoute);
 app.use('/bookstore', bookstoreRoute);
+
+// parse url encoded forms data
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

@@ -1,12 +1,20 @@
-/* h1 {
-  color: green;
-}
-
 body {
-  text-align: center;
-  margin: auto;
-} */
+  padding-top: 120px;
+}
 
 .cover {
   height: 100px;
+}
+
+.table .action {
+  vertical-align: middle;
+}
+
+.table .action img {
+  cursor: pointer;
+}
+
+#addBookModalWindow.show {
+  display: block;
+  top: 75px;
 }
