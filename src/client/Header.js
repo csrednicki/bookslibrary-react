@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import 'animate.css/animate.css'
 
 export default class Header extends Component {
     constructor(props) {
@@ -32,6 +33,41 @@ export default class Header extends Component {
                                 onClick={() => this.props.saveBooks()}>
                                 Save all books
                             </button>
+                        </li>
+                        <li>
+
+                            <div id="messages" className="bs-component ml-sm-3">
+
+                                {(() => {
+
+                                    switch(this.props.userMessage){
+                                        case "addedBook":
+                                            return(
+                                                <div className="alert alert-dismissible alert-success tada animated">
+                                                    <strong>Well done!</strong> You successfully added new book.
+                                                </div>
+                                            );
+                                        break;
+                                        case "deletedBook":
+                                            return(
+                                                <div className="alert alert-dismissible alert-success tada animated">
+                                                    <strong>Good job!</strong> You successfully removed a book.
+                                                </div>
+                                            );
+                                        break;
+                                        case "savedBooks":
+                                            return(
+                                                <div className="alert alert-dismissible alert-success slideInDown animated">
+                                                    <strong>Great!</strong> You successfully saved all books.
+                                                </div>
+                                            );
+                                        break;
+
+                                    }
+
+                                })()}
+
+                            </div>
                         </li>
                     </ul>
 

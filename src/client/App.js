@@ -17,7 +17,6 @@ export default class App extends Component {
     this.addBook = this.addBook.bind(this);
     this.editBook = this.editBook.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
-    //this.update = this.update.bind(this);
 
     this.bookmodal = React.createRef();
 
@@ -25,6 +24,8 @@ export default class App extends Component {
       bookstore: [],
       searchString: '',
       isEdited: false,
+      editedBookId: undefined,
+      userMessage: '',
 
       book: {
         title: undefined,
@@ -79,24 +80,29 @@ export default class App extends Component {
 
     this.setState({
       bookstore: this.state.bookstore.concat(bookData)
-    })
+    }, () => {
+      this.bookmodal.current.closeWindow()
+    });
 
-    this.bookmodal.current.closeWindow();
   }
 
-  editBook(id) {
+  editBook() {
+
+    let id = this.state.editedBookId;
 
     console.log('Edit book id:', id);
 
     let books = this.state.bookstore;
 
-    books[id] = this.state.books;
+    books[id] = this.state.book;
 
       this.setState({
         bookstore: books,
-        isEdited: false // editing ended
-      }, function() {
-        console.log( this.state.bookstore )
+        isEdited: false, // editing ended
+        editedBookId: undefined
+      }, () => {
+        console.log( 'edit', this.state.bookstore )
+        this.bookmodal.current.closeWindow();
       })
   }
 
@@ -107,7 +113,8 @@ export default class App extends Component {
 
     this.setState({
       book: this.state.bookstore[id],
-      isEdited: true // editing start
+      isEdited: true, // editing start
+      editedBookId: id
     }, () => {
       this.bookmodal.current.showWindow();
     });
@@ -144,8 +151,14 @@ export default class App extends Component {
       contentType: "application/json",
       data: dataToSave,
       success: (data) => {
-        console.log('Books saved sucessfully');
-        this.bookmodal.current.closeWindow();
+
+        this.setState({
+          userMessage: "savedBooks"
+        }, function() {
+          console.log('Books saved sucessfully');
+          this.bookmodal.current.closeWindow();
+        });
+
       },
       error: (error) => {
         console.log('Error saving books:', error);
@@ -171,6 +184,7 @@ export default class App extends Component {
     }).map((book, i) =>
       <tr key={i}>
         <td>{book.title}</td>
+        <td>{book.description}</td>
         <td>{book.isbn}</td>
         <td><img className="cover" src={book.cover} /></td>
         <td className="action"><img
@@ -190,7 +204,12 @@ export default class App extends Component {
 
     return (
       <div>
-        <Header showAddBookWindow={this.showAddBookWindow} saveBooks={this.saveBooks} handleSearch={this.handleSearch}/>
+        <Header
+          showAddBookWindow={this.showAddBookWindow}
+          saveBooks={this.saveBooks}
+          handleSearch={this.handleSearch}
+          userMessage={this.state.userMessage}
+        />
 
         <AddBookModal
           ref={this.bookmodal}
@@ -206,6 +225,7 @@ export default class App extends Component {
             <thead>
               <tr>
                 <th>Title</th>
+                <th>Description</th>
                 <th>ISBN</th>
                 <th>Cover</th>
                 <th>Edit</th>
