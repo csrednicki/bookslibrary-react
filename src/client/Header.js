@@ -62,7 +62,6 @@ export default class Header extends Component {
                                                 </div>
                                             );
                                         break;
-
                                         case "savingBooksError":
                                             return(
                                                 <div className="alert alert-dismissible alert-danger slideInDown animated">
@@ -70,8 +69,6 @@ export default class Header extends Component {
                                                 </div>
                                             );
                                         break;
-
-
                                         case "editedBook":
                                             return(
                                                 <div className="alert alert-dismissible alert-success slideInDown animated">
@@ -93,9 +90,7 @@ export default class Header extends Component {
                                                 </div>
                                             );
                                         break;
-
                                     }
-
                                 })()}
 
                             </div>

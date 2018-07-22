@@ -20,19 +20,14 @@ router.get('/getBooks', function (req, res, next) {
 router.put('/saveBooks', function (req, res, next) {
     let data = req.body;
 
-    if(data.length > 0 ) {
+    let booksData = JSON.stringify(req.body);
 
-        let booksData = JSON.stringify(req.body);
-
-        // saving books file
-        utils.saveData(dbfile, booksData)
-            .then(data => {
-                res.status(200).send('List saved')
-            } )
-            .catch(error => console.log('Error: ', error) );
-    } else {
-        res.status(200).send('List empty')
-    }
+    // saving books file
+    utils.saveData(dbfile, booksData)
+        .then(data => {
+            res.status(200).send('List saved')
+        })
+        .catch(error => console.log('Error: ', error));
 });
 
 module.exports = router;

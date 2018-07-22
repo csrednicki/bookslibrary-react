@@ -28,12 +28,11 @@ export default class App extends Component {
       userMessage: '',
 
       book: {
-        title: undefined,
-        isbn: undefined,
-        cover: undefined,
-        description: undefined
+        title: '',
+        isbn: '',
+        cover: '',
+        description: ''
       }
-
     };
   }
 
@@ -65,7 +64,6 @@ export default class App extends Component {
 
   showAddBookWindow() {
     this.setState({
-      book: {},
       isEdited: false
     }, () => {
       this.bookmodal.current.showWindow();
@@ -153,15 +151,13 @@ export default class App extends Component {
   componentDidMount() {
     // fetching books data from api
     fetch("/bookstore/getBooks")
-      .then(res => {
-
-        res.json().catch(error => {
-          this.showMessage("emptyBooks");
-          console.log('Error parsing json!')
-        });
-
-      })
-      .then(bookstore => this.setState({ bookstore }));
+      .then(res => res.json())
+      .then(bookstore => this.setState({ bookstore }))
+      .catch(error => {
+        this.showMessage("emptyBooks");
+        console.log('Error parsing json!')
+        this.setState({ bookstore: [] });
+      });
   }
 
   render() {

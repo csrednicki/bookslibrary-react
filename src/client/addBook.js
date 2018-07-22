@@ -19,7 +19,6 @@ export default class AddBookModal extends Component {
 
     render() {
         if (this.state.visible) {
-
             return (
                 <div className="bs-component">
                     <div id="addBookModalWindow" className="modal show">
