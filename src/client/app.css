@@ -22,3 +22,9 @@ body {
 #messages .alert {
   margin: 0;
 }
+
+.table .title { width: 20%; }
+.table .description { width: 50%; }
+.table .isbn { width: 10%; }
+.table .covers { width: 10%; }
+.table .action { width: 5%; }

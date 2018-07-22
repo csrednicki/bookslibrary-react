@@ -102,7 +102,7 @@ export default class Header extends Component {
                         <input
                             className="form-control mr-lg-3"
                             type="text"
-                            placeholder="Search"
+                            placeholder="Search by title"
                             ref={(input) => this.searchInput = input}
                         />
 

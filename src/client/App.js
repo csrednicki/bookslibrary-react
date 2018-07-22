@@ -16,9 +16,8 @@ export default class App extends Component {
     this.saveBooks = this.saveBooks.bind(this);
     this.addBook = this.addBook.bind(this);
     this.editBook = this.editBook.bind(this);
+    this.closeWindow = this.closeWindow.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
-
-    this.bookmodal = React.createRef();
 
     this.state = {
       bookstore: [],
@@ -26,6 +25,7 @@ export default class App extends Component {
       isEdited: false,
       editedBookId: undefined,
       userMessage: '',
+      windowVisible: false,
 
       book: {
         title: '',
@@ -54,6 +54,22 @@ export default class App extends Component {
     this.setState({ book: modifiedBook });
   }
 
+  showWindow() {
+    this.setState({ windowVisible: true });
+  }
+
+  closeWindow() {
+    this.setState({
+      windowVisible: false,
+      book: {
+        title: '',
+        isbn: '',
+        cover: '',
+        description: ''
+      }
+    });
+  }
+
   showMessage(messageId) {
     this.setState({ userMessage: messageId }, () => {
       setTimeout(() => {
@@ -66,22 +82,23 @@ export default class App extends Component {
     this.setState({
       isEdited: false
     }, () => {
-      this.bookmodal.current.showWindow();
+      this.showWindow();
     })
   }
 
   addBook() {
     let bookData = [this.state.book];
     let title = this.state.book.title;
+    let cover = this.state.book.cover;
 
     // simple form validation
-    if (typeof title === 'string' || title instanceof String && title.length >= 3) {
+    if ((typeof title === 'string' || title instanceof String) && title.length >= 3) {
       this.setState({
         // adding book to a bookstore
         bookstore: this.state.bookstore.concat(bookData)
       }, () => {
         this.showMessage("addedBook");
-        this.bookmodal.current.closeWindow();
+        this.closeWindow();
       });
     } else {
       this.showMessage("formError");
@@ -100,7 +117,7 @@ export default class App extends Component {
       editedBookId: undefined
     }, () => {
       this.showMessage("editedBook");
-      this.bookmodal.current.closeWindow();
+      this.closeWindow();
     })
   }
 
@@ -110,7 +127,7 @@ export default class App extends Component {
       isEdited: true, // editing start
       editedBookId: id
     }, () => {
-      this.bookmodal.current.showWindow();
+      this.showWindow();
     });
   }
 
@@ -139,7 +156,7 @@ export default class App extends Component {
       data: dataToSave,
       success: (data) => {
         this.showMessage("savedBooks");
-        this.bookmodal.current.closeWindow();
+        this.closeWindow();
       },
       error: (error) => {
         this.showMessage("savingBooksError");
@@ -161,19 +178,24 @@ export default class App extends Component {
   }
 
   render() {
-
     let list = undefined;
 
     if (this.state.bookstore && this.state.bookstore.length > 0) {
       list = this.state.bookstore.filter(d => {
-        const regex = new RegExp(this.state.searchString, 'gi'); // '^'+this.state.searchString
-        return d.title.match(regex);
+
+        try {
+          const regex = new RegExp(this.state.searchString, 'gi'); // '^'+this.state.searchString
+          return d.title.match(regex);
+        } catch (error) {
+          console.warn('Regular expression error');
+        }
+
       }).map((book, i) =>
         <tr key={i}>
           <td>{book.title}</td>
           <td>{book.description}</td>
           <td>{book.isbn}</td>
-          <td><img className="cover" src={book.cover} /></td>
+          <td>{book.cover.match(/^http/i) ? <img className="cover" src={book.cover} /> : ""}</td>
           <td className="action"><img
             className="editIcon"
             src={EditIcon}
@@ -201,24 +223,25 @@ export default class App extends Component {
         />
 
         <AddBookModal
-          ref={this.bookmodal}
           addBook={this.addBook}
           editBook={this.editBook}
           handleInputChange={this.handleInputChange}
           book={this.state.book}
           isEdited={this.state.isEdited}
+          closeWindow={this.closeWindow}
+          windowVisible={this.state.windowVisible}
         />
 
         <div className="container">
           <table className="table table-hover">
             <thead>
               <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>ISBN</th>
-                <th>Cover</th>
-                <th>Edit</th>
-                <th>Delete</th>
+                <th className="title">Title</th>
+                <th className="description">Description</th>
+                <th className="isbn">ISBN</th>
+                <th className="covers">Cover</th>
+                <th className="action">Edit</th>
+                <th className="action">Delete</th>
               </tr>
             </thead>
 

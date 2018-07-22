@@ -3,22 +3,10 @@ import React, { Component } from "react";
 export default class AddBookModal extends Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            visible: false
-        };
-    }
-
-    showWindow() {
-        this.setState({ visible: true });
-    }
-
-    closeWindow() {
-        this.setState({ visible: false });
     }
 
     render() {
-        if (this.state.visible) {
+        if (this.props.windowVisible) {
             return (
                 <div className="bs-component">
                     <div id="addBookModalWindow" className="modal show">
@@ -26,7 +14,7 @@ export default class AddBookModal extends Component {
                             <div className="modal-content">
                                 <div className="modal-header">
                                     <h5 className="modal-title">{this.props.isEdited ? "Edit selected book" : "Add new book"}</h5>
-                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={() => this.closeWindow()}>
+                                    <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={() => this.props.closeWindow()}>
                                         <span aria-hidden="true">×</span>
                                     </button>
                                 </div>
@@ -41,16 +29,15 @@ export default class AddBookModal extends Component {
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <input type="text" name="isbn" value={this.props.book.isbn} onChange={this.props.handleInputChange} className="form-control" id="bookisbn" aria-describedby="bookIsbn" placeholder="Enter book isbn" />
+                                                    <input type="text" name="isbn" value={this.props.book.isbn} onChange={this.props.handleInputChange} className="form-control" id="bookisbn" aria-describedby="bookIsbn" placeholder="Enter book isbn number" />
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <input type="text" name="cover" value={this.props.book.cover} onChange={this.props.handleInputChange} className="form-control" id="bookcoverurl" aria-describedby="bookCoverUrl" placeholder="Enter book cover" />
+                                                    <input type="text" name="cover" value={this.props.book.cover} onChange={this.props.handleInputChange} className="form-control" id="bookcoverurl" aria-describedby="bookCoverUrl" placeholder="Enter book cover URL" />
                                                 </div>
 
                                                 <div className="form-group">
-                                                    <label htmlFor="descriptionTextarea">Enter book description</label>
-                                                    <textarea name="description" className="form-control" id="descriptionTextarea" rows="3" value={this.props.book.description} onChange={this.props.handleInputChange}></textarea>
+                                                    <textarea name="description" className="form-control" id="descriptionTextarea" rows="3" placeholder="Enter book description" value={this.props.book.description} onChange={this.props.handleInputChange}></textarea>
                                                 </div>
 
                                             </fieldset>
@@ -65,7 +52,7 @@ export default class AddBookModal extends Component {
                                     <button type="button" className="btn btn-primary" onClick={() => this.props.addBook()}>Add new book</button>
                                     }
 
-                                    <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={() => this.closeWindow()}>Close</button>
+                                    <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={() => this.props.closeWindow()}>Close</button>
                                 </div>
                             </div>
                         </div>
