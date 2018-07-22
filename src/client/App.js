@@ -39,14 +39,12 @@ export default class App extends Component {
 
   handleSearch(wordToMatch, e) {
     e.preventDefault(); // prevent search form submit
-    console.log('Search phrase:', wordToMatch);
     this.setState({
       searchString: wordToMatch
     });
   }
 
   handleInputChange(event) {
-    console.log('change')
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
@@ -54,63 +52,61 @@ export default class App extends Component {
     let modifiedBook = Object.assign({}, this.state.book); // creating copy of object
     modifiedBook[name] = value; // updating value
 
-    this.setState({
-      book: modifiedBook
-    }, () => console.log('state', this.state));
+    this.setState({ book: modifiedBook });
+  }
 
+  showMessage(messageId) {
+    this.setState({ userMessage: messageId }, () => {
+      setTimeout(() => {
+        this.setState({ userMessage: undefined });
+      }, 5000);
+    });
   }
 
   showAddBookWindow() {
-    console.log('Add new book');
-
     this.setState({
       book: {},
       isEdited: false
     }, () => {
       this.bookmodal.current.showWindow();
     })
-
   }
 
   addBook() {
-
     let bookData = [this.state.book];
+    let title = this.state.book.title;
 
-    console.log('Adding book', bookData);
-
-    this.setState({
-      bookstore: this.state.bookstore.concat(bookData)
-    }, () => {
-      this.bookmodal.current.closeWindow()
-    });
-
+    // simple form validation
+    if (typeof title === 'string' || title instanceof String && title.length >= 3) {
+      this.setState({
+        // adding book to a bookstore
+        bookstore: this.state.bookstore.concat(bookData)
+      }, () => {
+        this.showMessage("addedBook");
+        this.bookmodal.current.closeWindow();
+      });
+    } else {
+      this.showMessage("formError");
+    }
   }
 
   editBook() {
-
     let id = this.state.editedBookId;
-
-    console.log('Edit book id:', id);
-
     let books = this.state.bookstore;
 
     books[id] = this.state.book;
 
-      this.setState({
-        bookstore: books,
-        isEdited: false, // editing ended
-        editedBookId: undefined
-      }, () => {
-        console.log( 'edit', this.state.bookstore )
-        this.bookmodal.current.closeWindow();
-      })
+    this.setState({
+      bookstore: books,
+      isEdited: false, // editing ended
+      editedBookId: undefined
+    }, () => {
+      this.showMessage("editedBook");
+      this.bookmodal.current.closeWindow();
+    })
   }
 
   showEditBookWindow(id) {
-    console.log('Edit book id:', id);
-
-    console.log('edit book', this.state.bookstore[id])
-
     this.setState({
       book: this.state.bookstore[id],
       isEdited: true, // editing start
@@ -121,29 +117,22 @@ export default class App extends Component {
   }
 
   deleteBook(id) {
-    console.log('Delete book id:', id);
-
     let books = this.state.bookstore;
 
-    if(confirm('Are you sure ?')) {
+    if (confirm('Are you sure ?')) {
 
       books.splice(id, 1);
 
       this.setState({
-        bookstore: books
-      }, function() {
-        console.log( this.state.bookstore )
+        bookstore: books,
+      }, () => {
+        this.showMessage("deletedBook");
       })
-
     }
-
-
   }
 
   saveBooks() {
     let dataToSave = JSON.stringify(this.state.bookstore);
-
-    console.log('Saving book', dataToSave);
 
     AJAX.ajax({
       url: '/bookstore/saveBooks/',
@@ -151,17 +140,11 @@ export default class App extends Component {
       contentType: "application/json",
       data: dataToSave,
       success: (data) => {
-
-        this.setState({
-          userMessage: "savedBooks"
-        }, function() {
-          console.log('Books saved sucessfully');
-          this.bookmodal.current.closeWindow();
-        });
-
+        this.showMessage("savedBooks");
+        this.bookmodal.current.closeWindow();
       },
       error: (error) => {
-        console.log('Error saving books:', error);
+        this.showMessage("savingBooksError");
       }
     });
 
@@ -170,37 +153,47 @@ export default class App extends Component {
   componentDidMount() {
     // fetching books data from api
     fetch("/bookstore/getBooks")
-      .then(res => res.json())
+      .then(res => {
+
+        res.json().catch(error => {
+          this.showMessage("emptyBooks");
+          console.log('Error parsing json!')
+        });
+
+      })
       .then(bookstore => this.setState({ bookstore }));
   }
 
   render() {
 
-    console.log(this.state.bookstore)
+    let list = undefined;
 
-    const list = this.state.bookstore.filter(d => {
-      const regex = new RegExp(this.state.searchString, 'gi'); // '^'+this.state.searchString
-      return d.title.match(regex);
-    }).map((book, i) =>
-      <tr key={i}>
-        <td>{book.title}</td>
-        <td>{book.description}</td>
-        <td>{book.isbn}</td>
-        <td><img className="cover" src={book.cover} /></td>
-        <td className="action"><img
-          className="editIcon"
-          src={EditIcon}
-          title="Edit book"
-          onClick={() => this.showEditBookWindow(i)}
-        /></td>
-        <td className="action"><img
-          className="deleteIcon"
-          src={DeleteIcon}
-          title="Delete book"
-          onClick={() => this.deleteBook(i)}
-        /></td>
-      </tr>
-      );
+    if (this.state.bookstore && this.state.bookstore.length > 0) {
+      list = this.state.bookstore.filter(d => {
+        const regex = new RegExp(this.state.searchString, 'gi'); // '^'+this.state.searchString
+        return d.title.match(regex);
+      }).map((book, i) =>
+        <tr key={i}>
+          <td>{book.title}</td>
+          <td>{book.description}</td>
+          <td>{book.isbn}</td>
+          <td><img className="cover" src={book.cover} /></td>
+          <td className="action"><img
+            className="editIcon"
+            src={EditIcon}
+            title="Edit book"
+            onClick={() => this.showEditBookWindow(i)}
+          /></td>
+          <td className="action"><img
+            className="deleteIcon"
+            src={DeleteIcon}
+            title="Delete book"
+            onClick={() => this.deleteBook(i)}
+          /></td>
+        </tr>
+        );
+
+    }
 
     return (
       <div>
@@ -233,9 +226,7 @@ export default class App extends Component {
               </tr>
             </thead>
 
-            <tbody>
-              {list}
-            </tbody>
+            <tbody>{list}</tbody>
           </table>
         </div>
       </div>

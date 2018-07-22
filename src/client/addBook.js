@@ -10,29 +10,15 @@ export default class AddBookModal extends Component {
     }
 
     showWindow() {
-        console.log('Showing window: Add book')
-        this.setState({
-            visible: true
-        });
-    }
-
-    componentDidMount() {
-        console.log('title props', this.props.title)
+        this.setState({ visible: true });
     }
 
     closeWindow() {
-        console.log('Closing window: Add book')
-        this.setState({
-            visible: false,
-        });
+        this.setState({ visible: false });
     }
 
     render() {
-        console.log('render title props', this.state)
-
         if (this.state.visible) {
-
-            console.log('props', this.props)
 
             return (
                 <div className="bs-component">

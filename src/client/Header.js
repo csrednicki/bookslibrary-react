@@ -50,7 +50,7 @@ export default class Header extends Component {
                                         break;
                                         case "deletedBook":
                                             return(
-                                                <div className="alert alert-dismissible alert-success tada animated">
+                                                <div className="alert alert-dismissible alert-warning tada animated">
                                                     <strong>Good job!</strong> You successfully removed a book.
                                                 </div>
                                             );
@@ -59,6 +59,37 @@ export default class Header extends Component {
                                             return(
                                                 <div className="alert alert-dismissible alert-success slideInDown animated">
                                                     <strong>Great!</strong> You successfully saved all books.
+                                                </div>
+                                            );
+                                        break;
+
+                                        case "savingBooksError":
+                                            return(
+                                                <div className="alert alert-dismissible alert-danger slideInDown animated">
+                                                    <strong>Error!</strong> Saving books failed
+                                                </div>
+                                            );
+                                        break;
+
+
+                                        case "editedBook":
+                                            return(
+                                                <div className="alert alert-dismissible alert-success slideInDown animated">
+                                                    <strong>Nice!</strong> You successfully edited a book.
+                                                </div>
+                                            );
+                                        break;
+                                        case "formError":
+                                            return(
+                                                <div className="alert alert-dismissible alert-danger slideInDown animated">
+                                                    <strong>Error!</strong> Field "title" should have minimum 3 chars.
+                                                </div>
+                                            );
+                                        break;
+                                        case "emptyBooks":
+                                            return(
+                                                <div className="alert alert-dismissible alert-warning tada animated">
+                                                    <strong>Warning!</strong> There are no books!?
                                                 </div>
                                             );
                                         break;

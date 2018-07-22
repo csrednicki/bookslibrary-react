@@ -12,29 +12,25 @@ router.get('/getBooks', function (req, res, next) {
             res.setHeader('Content-Type', 'application/json');
             res.send(data);
         })
-        .catch(error => console.log('Error: ', error) );
+        .catch(error => {
+            console.log('Error: ', error)
+        });
 });
 
 router.put('/saveBooks', function (req, res, next) {
     let data = req.body;
 
-    console.log('data before', data)
-
     if(data.length > 0 ) {
 
         let booksData = JSON.stringify(req.body);
 
-        console.log('data after',  booksData)
-
         // saving books file
         utils.saveData(dbfile, booksData)
             .then(data => {
-                console.log(data)
                 res.status(200).send('List saved')
             } )
             .catch(error => console.log('Error: ', error) );
     } else {
-        console.log('List empty')
         res.status(200).send('List empty')
     }
 });
