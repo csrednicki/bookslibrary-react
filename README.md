@@ -24,20 +24,19 @@ http://localhost:3000/
 * Generating different code bundles for production and development environments.
 
 # Used technologies & what for
-HTML 5 - web page layout
-CSS 3 - styling layout
-SVG - icons
-JavaScript ES6 - application code
-React 16 - application code framework
-JSON - flat file for storing books
-NPM - package manager
-Node.js - api server for reading and storing books
-Nodemon - for watching changes in node.js scripts
-Express.js - api framework
-Webpack - bundling code for development and production environments
-Babel - transpiling code to Javascript ES5 for better browser compatibility
-Bootstrap - styling web page
-Animate.css - css library for animating page elements
-Bootswatch Materia - bootstrap theme https://bootswatch.com/materia/
-jQuery AJAX - used for sending books data to api
-
+* HTML 5 - web page layout
+* CSS 3 - styling layout
+* SVG - icons
+* JavaScript ES6 - application code
+* React 16 - application code framework
+* JSON - flat file for storing books
+* NPM - package manager
+* Node.js - api server for reading and storing books
+* Nodemon - for watching changes in node.js scripts
+* Express.js - api framework
+* Webpack - bundling code for development and production environments
+* Babel - transpiling code to Javascript ES5 for better browser compatibility
+* Bootstrap - styling web page
+* Animate.css - css library for animating page elements
+* Bootswatch Materia - bootstrap theme https://bootswatch.com/materia/
+* jQuery AJAX - used for sending books data to api
